@@ -1,1 +1,32 @@
+import axios from 'axios';
 
+const AUTH_TOKEN = process.env.AUTH_TOKEN; // Load this securely
+
+export async function logEvent(
+  stack: "backend" | "frontend",
+  level: "info" | "error" | "fatal",
+  packageName: string,
+  message: string
+) {
+  try {
+    const res = await axios.post(
+      "http://20.244.56.144/evaluation-service/logs",
+      {
+        stack,
+        level,
+        package: packageName,
+        message
+      },
+      {
+        headers: {
+          Authorization: Bearer ${AUTH_TOKEN}
+        }
+      }
+    );
+
+    console.log([LOG SUCCESS]: ${level.toUpperCase()} - ${packageName} - ${message});
+  } catch (error) {
+    console.error([LOG FAILURE]: Could not log message., error.message);
+  }
+}
+🧠 Strategic L
